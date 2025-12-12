@@ -67,7 +67,7 @@ WorkOrderUI_left <- function() {
 WorkOrderUI_right <- function() {
   res <- tagList(
 
-    shiny::actionButton(inputId = 'btn_WorkOrder_view',label = 'Query'),
+    shiny::actionButton(inputId = 'btn_WorkOrder_view',label = 'Search'),
 
     tsui::mdl_download_button(id = 'dl_WorkOrder',label = 'Download')
 
