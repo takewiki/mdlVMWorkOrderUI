@@ -1,3 +1,30 @@
+library(shiny)
+library(DT)
+library(shinyWidgets)
+WorkOrder_all_columns_ui <- c(
+  'Work OrderID',
+  'Work OrderId2',
+  'Production Date',
+  'Sales OrderID',
+  'Delivery Location',
+  'Sales OrderID2',
+  'PN',
+  'Product Name',
+  'Serial Number',
+  'Sales OrderQty',
+  'Delivery Date',
+  'Total DeliveryQty'
+)
+#设置默认值
+WorkOrder_default_columns_ui <- c(
+  'Work OrderID',
+  'PN',
+  'Product Name',
+  'Serial Number',
+  'Production Date',
+  'Sales OrderID',
+  'Delivery Location'
+)
 #' 序列号查询生成器界面
 #'
 #' @param colTitles  主页标题
@@ -14,7 +41,7 @@
 #' @examples
 #' WorkOrderUI()
 WorkOrderUI <- function(tabTitle ='Work Order',
-                           colTitles =c('Filter Area','Operation Area','Result Area'),
+                           colTitles =c('Operation Area','Column Setting','Result Area'),
                            widthRates =c(6,6,12),
                            func_left = WorkOrderUI_left,
                            func_right =WorkOrderUI_right,
@@ -42,7 +69,9 @@ WorkOrderUI_left <- function() {
 
 
   res <- tagList(
-    tsui::mdl_text2(id ='text_WorkOrder' ,label ='Work Order',value = '')
+    tsui::mdl_text2(id ='text_WorkOrder' ,label ='Work Order',value = ''),
+    shiny::actionButton(inputId = 'btn_WorkOrder_view',label = 'Search'),
+    tsui::mdl_download_button(id = 'dl_WorkOrder',label = 'Download')
 
 
 
@@ -66,10 +95,35 @@ WorkOrderUI_left <- function() {
 #' WorkOrderUI_bottom()
 WorkOrderUI_right <- function() {
   res <- tagList(
+    pickerInput(
+      inputId = "WorkOrder_column_selector",
+      label = "Selected Columns:",
+      choices = WorkOrder_all_columns_ui,
+      selected = WorkOrder_default_columns_ui,
+      options = list(
+        `actions-box` = TRUE,
+        `selected-text-format` = "count > 3",
+        `count-selected-text` = "{0} Columns Seleced",
+        size = 10,
+        `live-search` = TRUE,
+        `live-search-style` = "contains"
+      ),
+      multiple = TRUE,
+      choicesOpt = list(
+        style = rep(("color: black;"), 100)
+      )
+    ),
+    # 全选/取消全选按钮
+    actionButton("btn_WorkOrder_select_all", "Select All",
+                 class = "btn-primary btn-sm",
+                 style = "margin-right: 5px;"),
+    actionButton("btn_WorkOrder_deselect_all", "Deselect All",
+                 class = "btn-secondary btn-sm"),
+    actionButton("btn_WorkOrder_defaultValue", "Default Value",
+                 class = "btn-primary btn-sm"),
+    verbatimTextOutput("WorkOrder_selection_info")
 
-    shiny::actionButton(inputId = 'btn_WorkOrder_view',label = 'Search'),
 
-    tsui::mdl_download_button(id = 'dl_WorkOrder',label = 'Download')
 
 
 

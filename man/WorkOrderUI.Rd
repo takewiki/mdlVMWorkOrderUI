@@ -6,7 +6,7 @@
 \usage{
 WorkOrderUI(
   tabTitle = "Work Order",
-  colTitles = c("Filter Area", "Operation Area", "Result Area"),
+  colTitles = c("Operation Area", "Column Setting", "Result Area"),
   widthRates = c(6, 6, 12),
   func_left = WorkOrderUI_left,
   func_right = WorkOrderUI_right,
