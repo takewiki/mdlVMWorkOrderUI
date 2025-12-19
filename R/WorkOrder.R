@@ -4,13 +4,15 @@ library(shinyWidgets)
 WorkOrder_all_columns_ui <- c(
   'Work OrderID',
   'Work OrderId2',
-  'Production Date',
+  'Serial Number',
   'Sales OrderID',
-  'Delivery Location',
- # 'Sales OrderID2',
   'PN',
   'Product Name',
-  'Serial Number',
+  'Production Date',
+
+  'Delivery Location',
+ # 'Sales OrderID2',
+
   'Sales OrderQty',
   'Delivery Date'
  # 'Total DeliveryQty'
@@ -18,11 +20,11 @@ WorkOrder_all_columns_ui <- c(
 #设置默认值
 WorkOrder_default_columns_ui <- c(
   'Work OrderID',
+  'Serial Number',
+  'Sales OrderID',
   'PN',
   'Product Name',
-  'Serial Number',
   'Production Date',
-  'Sales OrderID',
   'Delivery Location'
 )
 #' 序列号查询生成器界面
