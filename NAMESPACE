@@ -2,8 +2,8 @@
 
 export(WorkOrderExportUI)
 export(WorkOrderExportUI_bottom)
-export(WorkOrderExportUI_left)
 export(WorkOrderExportUI_right)
+export(WorkOrderExport_row_ui)
 export(WorkOrderUI)
 export(WorkOrderUI_bottom)
 export(WorkOrderUI_left)

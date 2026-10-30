@@ -42,11 +42,11 @@ WorkOrderExport_default_columns_ui <- c(
 #' @examples
 #' WorkOrderExportUI()
 WorkOrderExportUI <- function(tabTitle = 'Export',
-                                     colTitles = c('Operation Area', 'Column Setting', 'Result Area'),
-                                     widthRates = c(6, 6, 12),
-                                     func_left = WorkOrderExportUI_left,
-                                     func_right = WorkOrderExportUI_right,
-                                     func_bottom = WorkOrderExportUI_bottom) {
+                              colTitles = c('Operation Area', 'Column Setting', 'Result Area'),
+                              widthRates = c(6, 6, 12),
+                              func_left = WorkOrderExportUI_left,
+                              func_right = WorkOrderExportUI_right,
+                              func_bottom = WorkOrderExportUI_bottom) {
   res = tsui::uiGen3(tabTitle = tabTitle, colTitles = colTitles, widthRates = widthRates,
                      func_left = func_left, func_right = func_right, func_bottom = func_bottom)
   return(res)
@@ -55,6 +55,40 @@ WorkOrderExportUI <- function(tabTitle = 'Export',
 #' @export
 #' @examples
 #' WorkOrderExportUI_left()
+#' 一行过滤条件的 UI（首行直接由 UI 渲染，不依赖服务端插入时机）
+#' @export
+WorkOrderExport_row_ui <- function(id, initial = list(), labels = NULL) {
+  `%||%` <- function(x, y) if (is.null(x) || length(x) == 0) y else x
+  if (is.null(labels)) labels <- mdlVMWorkOrderPkg::WorkOrderExport_fields()$label
+  f0 <- initial$field %||% labels[1]
+  if (!f0 %in% labels) f0 <- labels[1]
+  lp0 <- initial$lparen %||% ""
+  if (!lp0 %in% c("", "(", "((")) lp0 <- ""
+  rp0 <- initial$rparen %||% ""
+  if (!rp0 %in% c("", ")", "))")) rp0 <- ""
+  lg0 <- initial$logic %||% "AND"
+  if (!lg0 %in% c("AND", "OR")) lg0 <- "AND"
+  onclick <- sprintf("Shiny.setInputValue('%s','%s',{priority:'event'});document.querySelectorAll('.dlf-row').forEach(function(e){e.classList.remove('is-active');});this.classList.add('is-active');",
+                     "WorkOrderExport_filter_active", id)
+  shiny::div(
+    id = id, class = "dlf-row", onclick = onclick,
+    shiny::selectInput(paste0(id, "__lp"), NULL,
+                       choices = c("-" = "", "(" = "(", "((" = "(("),
+                       selected = lp0, selectize = FALSE, width = "70px"),
+    shiny::selectInput(paste0(id, "__field"), NULL, choices = labels,
+                       selected = f0, selectize = FALSE, width = "162px"),
+    shiny::uiOutput(paste0(id, "__op_ui")),
+    shiny::uiOutput(paste0(id, "__val_ui")),
+    shiny::selectInput(paste0(id, "__rp"), NULL,
+                       choices = c("-" = "", ")" = ")", "))" = "))"),
+                       selected = rp0, selectize = FALSE, width = "70px"),
+    shiny::selectInput(paste0(id, "__logic"), NULL,
+                       choices = c("AND" = "AND", "OR" = "OR"),
+                       selected = lg0, selectize = FALSE, width = "100px"),
+    shiny::actionButton(paste0(id, "__del"), "", icon = shiny::icon("minus"))
+  )
+}
+
 WorkOrderExportUI_left <- function() {
   res <- tagList(
     tags$head(tags$style(HTML(paste0(
@@ -70,7 +104,7 @@ WorkOrderExportUI_left <- function() {
         actionLink("btn_WorkOrderExport_filter_insert", "Insert Row"),
         actionLink("btn_WorkOrderExport_filter_copy", "Copy Row")
     ),
-    div(id = "WorkOrderExport_filter_rows"),
+    div(id = "WorkOrderExport_filter_rows", WorkOrderExport_row_ui("woe_001")),
     tags$hr(),
     shiny::actionButton(inputId = "btn_WorkOrderExport_view", label = "Search"),
     tsui::mdl_download_button(id = 'dl_WorkOrderExport', label = 'Export')
